@@ -11,10 +11,10 @@ import java.util.Random;
 public class EchoClientHandler extends ChannelInboundHandlerAdapter {
     // private final ByteBuf message;
 
-    private String getTempValue() {
+    private String getTempValue(int size) {
         Random random = new Random();
 
-        return StringUtils.leftPad(Integer.toHexString(random.nextInt(250)), 4, '0');
+        return StringUtils.leftPad(Integer.toHexString(random.nextInt(250)), size, '0');
     }
 
     // 초기화
@@ -45,14 +45,39 @@ public class EchoClientHandler extends ChannelInboundHandlerAdapter {
             Thread.sleep(5000);
             // 샘플 데이터
             // byte[] str = "000000000201021750470000006420200207001001010059000a00ca002d001d".getBytes();
-            String prefixData = "00000000020102175047000000642020020700100101";
-            String temperatureValue = getTempValue();
+            // DEAD FF000201 00000000 00000012 123456 00 00 00 00 00 0000 0000 0000 00 00 00 00 00 00 00 0000 0000 00 0000000000000000000000 00 00 00 00 0000 000000000000000000000000
+            // String prefixData = "00000000020102175047000000642020020700100101";
+            String prefixData = "DEADFF00020100000000000000121234560000000000";
+            String temperatureSensorValue = getTempValue(4);
+            String gasSensorValue = getTempValue(4);
+            String smogSensorValue = getTempValue(4);
+            String temperatureAlarm = getTempValue(2);
+            String gasAlarm = getTempValue(2);
+            String smogAlarm = getTempValue(2);
+            String manualAlarm = getTempValue(2);
+            String autoAlarm = getTempValue(2);
+            String autoAlarmEnable = getTempValue(2);
+            String externalPower = getTempValue(2);
+            String smogSensorBaseValue = getTempValue(4);
+            String frameSensorValue = getTempValue(4);
+            String frameAlarm = getTempValue(2);
+            String reserveData = getTempValue(22);
+            String sensorRssl = getTempValue(2);
+            String apRssl = getTempValue(2);
+            String temperatureValue = getTempValue(2);
+            String smogValue = getTempValue(2);
+            String reservedData2 = getTempValue(4);
+            String packetStr = getTempValue(24);
+
+            /*String temperatureValue = getTempValue();
             String gasValue = getTempValue();
             String smokeValue = getTempValue();
             String smokeDefaultValue = getTempValue();
-            String frameValue = getTempValue();
+            String frameValue = getTempValue();*/
 
-            String tempTotalData = prefixData + temperatureValue + gasValue + smokeValue + smokeDefaultValue + frameValue;
+            String tempTotalData = prefixData + temperatureSensorValue + gasSensorValue + smogSensorValue + temperatureAlarm + gasAlarm + smogAlarm
+                    + manualAlarm + autoAlarm + autoAlarmEnable + externalPower + smogSensorBaseValue + frameSensorValue + frameAlarm + reserveData
+                    + sensorRssl + apRssl + temperatureValue + smogValue + reservedData2 + packetStr + "FA11";
             System.out.println("tempTotalData = " + tempTotalData);
 
             message.writeBytes(tempTotalData.getBytes());
