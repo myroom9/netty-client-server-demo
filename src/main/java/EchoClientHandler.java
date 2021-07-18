@@ -47,7 +47,7 @@ public class EchoClientHandler extends ChannelInboundHandlerAdapter {
             // byte[] str = "000000000201021750470000006420200207001001010059000a00ca002d001d".getBytes();
             // DEAD FF000201 00000000 00000012 123456 00 00 00 00 00 0000 0000 0000 00 00 00 00 00 00 00 0000 0000 00 0000000000000000000000 00 00 00 00 0000 000000000000000000000000
             // String prefixData = "00000000020102175047000000642020020700100101";
-            String prefixData = "DEADFF00020100000000000000121234560000000000";
+            String prefixData = "DEADFF00020100000000000000120000001234560000000000";
             String temperatureSensorValue = getTempValue(4);
             String gasSensorValue = getTempValue(4);
             String smogSensorValue = getTempValue(4);
