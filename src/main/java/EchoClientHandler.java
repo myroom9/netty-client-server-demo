@@ -39,6 +39,7 @@ public class EchoClientHandler extends ChannelInboundHandlerAdapter {
     // 채널이 활성화 되면 동작할 코드를 정의합니다.
     @Override
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
+        byte[] b = new byte[74];
         while(true) {
             ByteBuf message = Unpooled.buffer(EchoClient.MESSAGE_SIZE);
 
@@ -47,41 +48,140 @@ public class EchoClientHandler extends ChannelInboundHandlerAdapter {
             // byte[] str = "000000000201021750470000006420200207001001010059000a00ca002d001d".getBytes();
             // DEAD FF000201 00000000 00000012 123456 00 00 00 00 00 0000 0000 0000 00 00 00 00 00 00 00 0000 0000 00 0000000000000000000000 00 00 00 00 0000 000000000000000000000000
             // String prefixData = "00000000020102175047000000642020020700100101";
-            String prefixData = "DEADFF00020100000000000000120000001234560000000000";
-            String temperatureSensorValue = getTempValue(4);
-            String gasSensorValue = getTempValue(4);
-            String smogSensorValue = getTempValue(4);
-            String temperatureAlarm = getTempValue(2);
-            String gasAlarm = getTempValue(2);
-            String smogAlarm = getTempValue(2);
-            String manualAlarm = getTempValue(2);
-            String autoAlarm = getTempValue(2);
-            String autoAlarmEnable = getTempValue(2);
-            String externalPower = getTempValue(2);
-            String smogSensorBaseValue = getTempValue(4);
-            String frameSensorValue = getTempValue(4);
-            String frameAlarm = getTempValue(2);
-            String reserveData = getTempValue(22);
-            String sensorRssl = getTempValue(2);
-            String apRssl = getTempValue(2);
-            String temperatureValue = getTempValue(2);
-            String smogValue = getTempValue(2);
-            String reservedData2 = getTempValue(4);
-            String packetStr = getTempValue(24);
+            b[0] = (byte) 0xde;
+            b[1] = (byte) 0xad;
 
-            /*String temperatureValue = getTempValue();
-            String gasValue = getTempValue();
-            String smokeValue = getTempValue();
-            String smokeDefaultValue = getTempValue();
-            String frameValue = getTempValue();*/
+            // type
+            b[2] = (byte) 0xff;
+            b[3] = (byte) 0x00;
+            b[4] = (byte) 0x02;
+            b[5] = (byte) 0x01;
 
-            String tempTotalData = prefixData + temperatureSensorValue + gasSensorValue + smogSensorValue + temperatureAlarm + gasAlarm + smogAlarm
-                    + manualAlarm + autoAlarm + autoAlarmEnable + externalPower + smogSensorBaseValue + frameSensorValue + frameAlarm + reserveData
-                    + sensorRssl + apRssl + temperatureValue + smogValue + reservedData2 + packetStr + "FA11";
-            System.out.println("tempTotalData = " + tempTotalData);
+            // timestamp
+            b[6] = (byte) 0xd3;
+            b[7] = (byte) 0xd5;
+            b[8] = (byte) 0x22;
+            b[9] = (byte) 0x16;
 
-            message.writeBytes(tempTotalData.getBytes());
-            message.writeByte((byte) 0x11);
+            // 패킷 동작 ID
+            b[10] = (byte) 0x00;
+            b[11] = (byte) 0x00;
+            b[12] = (byte) 0x00;
+            b[13] = (byte) 0x12;
+
+            // 콘솔 device ID
+            b[14] = (byte) 0x31;
+            b[15] = (byte) 0x32;
+            b[16] = (byte) 0x33;
+            b[17] = (byte) 0x34;
+            b[18] = (byte) 0x35;
+            b[19] = (byte) 0x36;
+
+            // sensor idx
+            b[20] = (byte) 0x00;
+
+            // sensor device number => 100
+            b[21] = (byte) 0x64;
+
+            // sen_seq
+            b[22] = (byte) 0x00;
+
+            // sen_cmd
+            b[23] = (byte) 0x50;
+
+            // error code
+            b[24] = (byte) 0x00;
+
+            // temperature sensor value
+            b[25] = (byte) 0x01;
+            b[26] = (byte) 0x10;
+
+            // gas sensor value
+            b[27] = (byte) 0x00;
+            b[28] = (byte) 0x03;
+
+            // smog sensor value
+            b[29] = (byte) 0x01;
+            b[30] = (byte) 0xCE;
+
+            // temperature alarm
+            b[31] = (byte) 0x30;
+            // gas alarm
+            b[32] = (byte) 0x30;
+
+            // smog alarm
+            b[33] = (byte) 0x30;
+
+            // manual alarm
+            b[34] = (byte) 0x30;
+
+            // autoAlarm
+            b[35] = (byte) 0x30;
+
+            // auto alarm enable
+            b[36] = (byte) 0x31;
+
+            // ext pwr
+            b[37] = (byte) 0x01;
+
+            // smog sensor base value
+            b[38] = (byte) 0x01;
+            b[39] = (byte) 0xd0;
+
+            // frame sensor value
+            b[40] = (byte) 0x00;
+            b[41] = (byte) 0x00;
+
+            // frame alarm
+            b[42] = (byte) 0x30;
+
+            // RFU
+            b[43] = (byte) 0x00;
+            b[44] = (byte) 0x00;
+            b[45] = (byte) 0x00;
+            b[46] = (byte) 0x00;
+            b[47] = (byte) 0x00;
+            b[48] = (byte) 0x00;
+            b[49] = (byte) 0x00;
+            b[50] = (byte) 0x00;
+            b[51] = (byte) 0x00;
+            b[52] = (byte) 0x00;
+            b[53] = (byte) 0x00;
+
+            // sensor rssl
+            b[54] = (byte) 0x00;
+
+            // ap rssl
+            b[55] = (byte) 0x00;
+
+            // temperature val
+            b[56] = (byte) 0xFF;
+
+            // smog val
+            b[57] = (byte) 0xFF;
+
+            // rsv
+            b[58] = (byte) 0x00;
+            b[59] = (byte) 0x00;
+
+            // packet_str
+            b[60] = (byte) 0x5b;
+            b[61] = (byte) 0x53;
+            b[62] = (byte) 0x45;
+            b[63] = (byte) 0x4e;
+            b[64] = (byte) 0x53;
+            b[65] = (byte) 0x4f;
+            b[66] = (byte) 0x52;
+            b[67] = (byte) 0x44;
+            b[68] = (byte) 0x41;
+            b[69] = (byte) 0x54;
+            b[70] = (byte) 0x41;
+            b[71] = (byte) 0x5d;
+
+            b[72] = (byte) 0xfa;
+            b[73] = (byte) 0x11;
+
+            message.writeBytes(b);
 
             // 메시지를 쓴 후 플러쉬합니다.
             ctx.writeAndFlush(message);
