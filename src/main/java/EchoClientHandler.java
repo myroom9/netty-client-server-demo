@@ -17,23 +17,10 @@ public class EchoClientHandler extends ChannelInboundHandlerAdapter {
         return StringUtils.leftPad(Integer.toHexString(random.nextInt(250)), size, '0');
     }
 
-    // 초기화
-    public EchoClientHandler() throws InterruptedException {
-        /*message = Unpooled.buffer(EchoClient.MESSAGE_SIZE);
-        // 샘플 데이터
-        // byte[] str = "000000000201021750470000006420200207001001010059000a00ca002d001d".getBytes();
-        String prefixData = "00000000020102175047000000642020020700100101";
-        String temperatureValue = getTempValue();
-        String gasValue = getTempValue();
-        String smokeValue = getTempValue();
-        String smokeDefaultValue = getTempValue();
-        String frameValue = getTempValue();
+    private Integer getTempValueV2() {
+        Random random = new Random();
 
-        String tempTotalData = prefixData + temperatureValue + gasValue + smokeValue + smokeDefaultValue + frameValue;
-        System.out.println("tempTotalData = " + tempTotalData);
-
-        message.writeBytes(tempTotalData.getBytes());
-        message.writeByte((byte) 0x11);*/
+        return random.nextInt(255);
     }
 
     // 채널이 활성화 되면 동작할 코드를 정의합니다.
@@ -155,10 +142,12 @@ public class EchoClientHandler extends ChannelInboundHandlerAdapter {
             b[55] = (byte) 0x00;
 
             // temperature val
-            b[56] = (byte) 0xFF;
+            // b[56] = (byte) 0xFF;
+            b[56] = getTempValueV2().byteValue();
 
             // smog val
-            b[57] = (byte) 0xFF;
+            // b[57] = (byte) 0xFF;
+            b[57] = getTempValueV2().byteValue();
 
             // rsv
             b[58] = (byte) 0x00;
